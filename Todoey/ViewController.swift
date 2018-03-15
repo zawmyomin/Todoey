@@ -11,10 +11,15 @@ import UIKit
 class ViewController: UITableViewController {
     
     var  itemArray = ["Kyaw Kyaw", "Min Min", "Lynn Lynn","Soe Soe"]
+    
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
        
+        if let items = UserDefaults.standard.array(forKey: "TodolsitArray") as? [String] {
+            itemArray = items
+        }
     }
     
     @IBAction func addBtn(_ sender: UIBarButtonItem) {
@@ -27,6 +32,9 @@ class ViewController: UITableViewController {
             //What will happen once the user click  the add item button on our Alert
             print("Success")
             self.itemArray.append(textField.text!)
+            
+            self.defaults.set(self.itemArray, forKey: "TodolsitArray")
+            
             self.tableView.reloadData()
         
         }
