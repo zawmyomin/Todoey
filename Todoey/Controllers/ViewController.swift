@@ -10,16 +10,35 @@ import UIKit
 
 class ViewController: UITableViewController {
     
-    var  itemArray = ["Kyaw Kyaw", "Min Min", "Lynn Lynn","Soe Soe"]
+    var  itemArray = [Item]()
     
     let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-        if let items = UserDefaults.standard.array(forKey: "TodolsitArray") as? [String] {
-            itemArray = items
-        }
+        
+        let newItem = Item()
+        newItem.title = "Kaung Kaung"
+        newItem.done = true
+        itemArray.append(newItem)
+        
+        let newItem2 = Item()
+        newItem2.title = "Kyaw Kyaw"
+        itemArray.append(newItem2)
+        
+        
+        let newItem3 = Item()
+        newItem3.title = "Kyaw Kyaw"
+        itemArray.append(newItem3)
+        
+        let newItem4 = Item()
+        newItem4.title = "Kyaw Kyaw"
+        itemArray.append(newItem4)
+        
+      
+//        if let items = UserDefaults.standard.array(forKey: "TodolsitArray") as? [String] {
+//            itemArray = items
+//        }
     }
     
     @IBAction func addBtn(_ sender: UIBarButtonItem) {
@@ -31,7 +50,11 @@ class ViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             //What will happen once the user click  the add item button on our Alert
             print("Success")
-            self.itemArray.append(textField.text!)
+            
+            let newItem = Item()
+            newItem.title = textField.text!
+            
+            self.itemArray.append(newItem)
             
             self.defaults.set(self.itemArray, forKey: "TodolsitArray")
             
@@ -57,8 +80,23 @@ class ViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+      
+        let item = itemArray[indexPath.row]
+         cell.textLabel?.text = item.title
+        
+        //Ternary operator ==>
+        //Value = condition ? valueIfTrue : valueIfFalse
+        cell.accessoryType = item.done ? .checkmark : .none
+        
+//        if item.done == true {
+//            cell.accessoryType = .checkmark
+//        }
+//        else {
+//            cell.accessoryType = .none
+//        }
+        
         return cell
     }
    
@@ -67,12 +105,23 @@ class ViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if tableView.cellForRow(at: indexPath)?.accessoryType  == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
-//        tableView.deselectRow(at: indexPath, animated: true)
+        
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+//        if  itemArray[indexPath.row].done == false {
+//            itemArray[indexPath.row].done = true
+//        }else {
+//            itemArray[indexPath.row].done = false
+//        }
+//
+        tableView.reloadData()
+        
+//        if tableView.cellForRow(at: indexPath)?.accessoryType  == .checkmark {
+//            tableView.cellForRow(at: indexPath)?.accessoryType = .none
+//        }else {
+//            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+//        }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
 }
