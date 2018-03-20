@@ -12,33 +12,35 @@ class ViewController: UITableViewController {
     
     var  itemArray = [Item]()
     
-    let defaults = UserDefaults.standard
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let newItem = Item()
-        newItem.title = "Kaung Kaung"
-        newItem.done = true
-        itemArray.append(newItem)
         
-        let newItem2 = Item()
-        newItem2.title = "Kyaw Kyaw"
-        itemArray.append(newItem2)
+        loadItems()
         
-        
-        let newItem3 = Item()
-        newItem3.title = "Kyaw Kyaw"
-        itemArray.append(newItem3)
-        
-        let newItem4 = Item()
-        newItem4.title = "Kyaw Kyaw"
-        itemArray.append(newItem4)
+//        let newItem = Item()
+//        newItem.title = "Kaung Kaung"
+//        newItem.done = true
+//        itemArray.append(newItem)
+//
+//        let newItem2 = Item()
+//        newItem2.title = "Kyaw Kyaw"
+//        itemArray.append(newItem2)
+//
+//
+//        let newItem3 = Item()
+//        newItem3.title = "Kyaw Kyaw"
+//        itemArray.append(newItem3)
+//
+//        let newItem4 = Item()
+//        newItem4.title = "Kyaw Kyaw"
+//        itemArray.append(newItem4)
         
       
-//        if let items = UserDefaults.standard.array(forKey: "TodolsitArray") as? [String] {
-//            itemArray = items
-//        }
+
     }
     
     @IBAction func addBtn(_ sender: UIBarButtonItem) {
@@ -55,8 +57,17 @@ class ViewController: UITableViewController {
             newItem.title = textField.text!
             
             self.itemArray.append(newItem)
+            self.saveItems()
             
-            self.defaults.set(self.itemArray, forKey: "TodolsitArray")
+            let encoder = PropertyListEncoder()
+            
+            do {
+            let data = try encoder.encode(self.itemArray)
+                try data.write(to: self.dataFilePath!)
+            }catch {
+                print("Error enconding item array, \(error)")
+            }
+//            self.defaults.set(self.itemArray, forKey: "TodolsitArray")
             
             self.tableView.reloadData()
         
@@ -114,14 +125,39 @@ class ViewController: UITableViewController {
 //            itemArray[indexPath.row].done = false
 //        }
 //
-        tableView.reloadData()
+        saveItems()
         
-//        if tableView.cellForRow(at: indexPath)?.accessoryType  == .checkmark {
-//            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-//        }else {
-//            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-//        }
+        if tableView.cellForRow(at: indexPath)?.accessoryType  == .checkmark {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        }else {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        }
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    //MARK - Model Manipulation Methods
+    
+    func saveItems() {
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        }catch {
+            print("Error encoding item array, \(error)")
+        }
+        
+        
+    }
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!){
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            }catch {
+                print("Error decoding item array, \(error)")
+            }
+        }
     }
 
 }
