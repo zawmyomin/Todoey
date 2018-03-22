@@ -33,7 +33,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="kiV-QK-gVG">
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="Ix1-5G-5zN">
+                        <barButtonItem key="rightBarButtonItem" title="Add-Item" id="Ix1-5G-5zN">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="addBtn:" destination="Lj6-Ud-mhF" id="Iov-SR-FPT"/>
